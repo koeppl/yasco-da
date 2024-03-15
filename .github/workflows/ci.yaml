@@ -1,0 +1,70 @@
+name: build
+on: [push]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  python:
+    name: check on Python
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: pip install pipenv
+
+      - name: run check
+        env:
+          TOXENV: checkall
+        run: |
+          pipenv sync --dev
+          pipenv run tox
+
+  rust:
+    name: check on Rust ${{ matrix.rust }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+          components: rustfmt, clippy
+
+      - name: Run cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --manifest-path Cargo.toml
+
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --manifest-path Cargo.toml --all -- --check
+
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --manifest-path Cargo.toml -- -D warnings -W clippy::nursery
+
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --manifest-path Cargo.toml --release --all-features
