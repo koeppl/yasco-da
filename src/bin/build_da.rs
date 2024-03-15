@@ -32,7 +32,14 @@ fn main() {
         da.len(),
         da.num_used() as f32 / da.base.len() as f32
     );
-    println!("RESULT method=greedy file={} keys={} baselength={} length={} filledentries={}", &args.input_path, nokeys, da.base.len(), da.len(), da.num_used());
+    println!(
+        "RESULT method=greedy file={} keys={} baselength={} length={} filledentries={}",
+        &args.input_path,
+        nokeys,
+        da.base.len(),
+        da.len(),
+        da.num_used()
+    );
 
     let keys = read_lines(path);
     for mut key in keys {
