@@ -24,8 +24,8 @@ for noPhrases in $(seq 1 5000); do
 	./truncateLines.py --input "$rawInputFile" --output "$inputFile" --length "$noPhrases"
 	[[ -r "$inputFile" ]] || die "$inputFile not readable"
 
-	set -x
-	set -e
+	# set -x
+	# set -e
 	cargo run --bin build_matrix -- --input "$inputFile" --output "$matrixFile"
 	timestart=$(date +%s)
 	out=$(cargo run --bin build_da -- --input "$inputFile" --output "$rustDoubleArray")
