@@ -22,6 +22,7 @@ fn main() {
     let args: AppArg = AppArg::parse();
     let path = Path::new(&args.input_path);
     let keys = read_lines(path);
+    let nokeys = keys.len();
     println!("# of keys = {}", keys.len());
     let da = DoubleArray::build(keys);
     println!("Size of double array is {}", da.base.len());
@@ -31,6 +32,7 @@ fn main() {
         da.len(),
         da.num_used() as f32 / da.base.len() as f32
     );
+    println!("RESULT method=greedy file={} keys={} baselength={} length={} filledentries={}", &args.input_path, nokeys, da.base.len(), da.len(), da.num_used());
 
     let keys = read_lines(path);
     for mut key in keys {

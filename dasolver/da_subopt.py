@@ -1,4 +1,5 @@
-# Compute sub-optimal sized double arrays.
+#!/usr/bin/env python3
+""" Compute sub-optimal sized double arrays. """
 
 
 import argparse
@@ -6,6 +7,7 @@ import json
 import subprocess
 import sys
 from typing import Tuple
+import shutil
 
 from joblib import Parallel, delayed
 
@@ -73,6 +75,7 @@ def calc_subopt2(
             if i > 0:
                 ng = sizes[i - 1]
 
+    shutil.copy2(f"{input}.sat-size={ok}.json", args.output)
     return ok
 
 
@@ -97,6 +100,7 @@ def parse_args():
         description="Compute sub-optimal sized double arrays."
     )
     parser.add_argument("--input", type=str, help="input file path", required=True)
+    parser.add_argument("--output", type=str, help="output file path", required=True)
     parser.add_argument("--size_beg", type=int, help="beginning of search range")
     parser.add_argument("--size_end", type=int, help="endding of search range")
     parser.add_argument("--n_proc", type=int, help="number of processors", default=1)
@@ -140,4 +144,4 @@ if __name__ == "__main__":
     res = calc_subopt2(
         args.input, args.size_beg, args.size_end, args.timeout, args.n_proc
     )
-    print(f"sub opt size={res}")
+    print(f"RESULT method=subopt file={args.input} length={res} searchstartlength={args.size_beg} searchendlength={args.size_end} procs={args.n_proc} timeout={args.timeout}")

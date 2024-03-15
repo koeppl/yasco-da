@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import json
 import sys
@@ -31,7 +33,8 @@ class DALiteral(Enum):
 
 
 class DALiteralManager(LiteralManager):
-    def __init__(self, mat: list[list[tuple[int, int]]], n_arr):
+    # def __init__(self, mat, n_arr):
+    def __init__(self, mat: List[List[Tuple[int, int]]], n_arr):
         self.mat = mat
         self.n_nodes = len(mat)
         self.n_arr = n_arr
@@ -75,10 +78,10 @@ class DALiteralManager(LiteralManager):
         assert ident == self.lits.used
         assert 0 <= pos < self.n_arr
 
-    def internal_nodes(self) -> list[int]:
+    def internal_nodes(self) -> List[int]:
         return [nid for nid in range(self.n_nodes) if len(self.mat[nid]) > 0]
 
-    def enum_base_keys(self) -> list[tuple[DALiteral, int, int]]:
+    def enum_base_keys(self) -> List[Tuple[DALiteral, int, int]]:
         return [
             (self.lits.base, nid, pos)
             for nid in self.internal_nodes()
