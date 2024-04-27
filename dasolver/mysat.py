@@ -16,7 +16,6 @@ class Literal(Enum):
 
 
 class LiteralManager:
-    # def __init__(self, lits=Literal):
     def __init__(self, lits: Type[Literal] = Literal):
         self.lits = lits
         self.vpool = IDPool()
@@ -27,7 +26,6 @@ class LiteralManager:
         Adds new object.
         """
         if len(obj) == 0:
-            # obj = ("auxlit", self.nvar["auxlit"])
             obj = (self.lits.auxlit, self.nvar[self.lits.auxlit])
         assert obj[0] in self.lits
         assert not self.contains(*obj)
@@ -38,7 +36,6 @@ class LiteralManager:
         """
         Gets id of the given object
         """
-        # print("getid", obj)
         assert self.contains(*obj)
         return self.vpool.obj2id[obj]
 
@@ -75,35 +72,9 @@ def pysat_and(new_var: Callable[[], int], xs: list[int]) -> Tuple[int, list[list
     return nvar, new_clauses
 
 
-# def pysat_atmost(
-#     lm: LiteralManager, xs: list[int], bound: int
-# ) -> Tuple[int, list[list[int]]]:
-#     """
-#     Create a literal and clauses such that the number of true literals in `xs` is at most `bound`.
-#     """
-
-#     atmost_clauses = CardEnc.atmost(xs, bound=bound, vpool=lm.vpool)
-
-#     xs = []
-#     new_clauses = []
-#     for clause in atmost_clauses:
-#         nvar, clauses = pysat_or(lm.newid, clause)
-#         new_clauses.extend(clauses)
-#         xs.append(nvar)
-#     nvar, clauses = pysat_and(lm.newid, xs)
-#     new_clauses.extend(clauses)
-#     return nvar, new_clauses
-
-
 def pysat_atleast_one(xs: list[int]) -> list[int]:
     return xs
 
-
-# def pysat_exactlyone(lm: LiteralManager, xs: list[int]) -> Tuple[int, list[list[int]]]:
-#     new_clauses = pysat_atleast_one(xs)
-#     nvar, clauses = pysat_atmost(lm, xs, bound=1)
-#     new_clauses.extend(clauses)
-#     return pysat_and(lm.newid, new_clauses)
 
 
 def pysat_exactlyone(lm: LiteralManager, xs: list[int]) -> Tuple[int, list[list[int]]]:

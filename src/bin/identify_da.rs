@@ -20,9 +20,6 @@ struct AppArg {
 
 fn main() {
     let args: AppArg = AppArg::parse();
-    // let path = Path::new(&args.input_path);
-    // let keys = read_lines(path);
-    // let tm = TrieMatrix::build(keys);
     let json1 = fs::read_to_string(&args.input_path1).unwrap();
     let da1 = DoubleArray::from_json(&json1);
     let keys1 = da1.enum_keys();
@@ -35,7 +32,4 @@ fn main() {
     assert_eq!(keys1.len(), keys2.len());
     assert_eq!(keys1, keys2);
 
-    // for key in keys2 {
-    //     println!("{}", std::str::from_utf8(&key).unwrap());
-    // }
 }

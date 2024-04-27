@@ -20,10 +20,6 @@ struct AppArg {
 fn main() {
     let args: AppArg = AppArg::parse();
     let path = Path::new(&args.input_path);
-    // let file = File::open(path).unwrap();
-    // let reader = BufReader::new(file);
-    // let da1: DoubleArray = serde_json::from_reader::<DoubleArray>(reader).unwrap();
-    // let da1: DoubleArray = serde_json::from_reader(reader).unwrap();
     let keys = read_lines(path);
     let tm = TrieMatrix::build(keys);
 
@@ -33,11 +29,8 @@ fn main() {
 
     let keys = read_lines(path);
     for mut key in keys {
-        // println!("{:?}", &key);
         assert!(tm.contain(&key));
         key.extend_from_slice(br"hogehoge");
-        // println!("{:?}", key);
         assert!(!tm.contain(&key));
     }
-    // use to_le_bytes()
 }

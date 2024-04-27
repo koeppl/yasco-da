@@ -43,17 +43,12 @@ fn main() {
 
     let keys = read_lines(path);
     for mut key in keys {
-        // println!("{:?}", key);
         assert!(da.contain(&key));
         key.extend_from_slice(br"hogehoge");
-        // println!("{:?}", key);
         assert!(!da.contain(&key));
     }
 
     let json = da.to_json();
     fs::write(&args.output_path, json).unwrap();
 
-    // for key in da.enum_keys() {
-    //     println!("{}", std::str::from_utf8(&key).unwrap());
-    // }
 }

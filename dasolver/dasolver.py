@@ -33,7 +33,6 @@ class DALiteral(Enum):
 
 
 class DALiteralManager(LiteralManager):
-    # def __init__(self, mat, n_arr):
     def __init__(self, mat: List[List[Tuple[int, int]]], n_arr):
         self.mat = mat
         self.n_nodes = len(mat)
@@ -54,7 +53,6 @@ class DALiteralManager(LiteralManager):
     def max_char(self, nid: int) -> int:
         return 0 if len(self.child_labels[nid]) == 0 else self.child_labels[nid][-1]
 
-    # def verify_base(self, *obj):
     def verify_base(self, *obj):
         assert len(obj) == 3
         # obj represents that the base value of node i is j.
@@ -112,7 +110,6 @@ def da_solver(
     n_nodes = len(mat)
     assert len(mat) > 0
     assert n_chars > 0
-    # assert n_arr >= n_chars
     logger.info(f"n_arr={n_arr}, n_nodes={n_nodes}, n_chars={n_chars}")
     clauses = []
     # register literals
@@ -124,18 +121,11 @@ def da_solver(
     def max_char(nid: int) -> int:
         return 0 if len(child_labels[nid]) == 0 else child_labels[nid][-1]
 
-    # # base
-    # for nid in range(n_nodes):
-    #     # for (c, child_id) in mat[nid]:
-    #     for pos in range(n_arr - max_char(nid)):
-    #         lm.newid(lm.lits.base, nid, pos)
     # check
     for nid in range(n_nodes):
         for pos in range(n_arr):
             lm.newid(lm.lits.check, nid, pos)
 
-        # for char in range(n_chars):
-        #     lm.newid(lm.lits.check, pos, char)
     # unused
     for pos in range(n_arr):
         lm.newid(lm.lits.used, pos)
@@ -150,14 +140,6 @@ def da_solver(
                 continue
             lit_check = lm.getid(lm.lits.check, nid, pos + c)
             clauses.append(pysat_if(lit_base, lit_check))
-    # for nid in range(n_nodes):
-    #     for pos in range(n_arr - max_char(nid)):
-    #         lit_base = lm.getid(lm.lits.base, nid, pos)
-    #         for (c, child_id) in mat[nid]:
-    #             if mat[nid] == root:
-    #                 continue
-    #             lit_check = lm.getid(lm.lits.check, nid, pos + c)
-    #             clauses.append(pysat_if(lit_base, lit_check))
 
     # every nodes have a single base value.
     for nid in set(nid for (_, nid, pos) in lm.enum_base_keys()):
@@ -172,11 +154,6 @@ def da_solver(
     for pos in range(n_arr):
         checks = [lm.getid(lm.lits.check, nid, pos) for nid in range(n_nodes)]
         clauses.extend(CardEnc.atmost(checks, bound=1, vpool=lm.vpool))
-        # lit, clauses = pysat_atmost(
-        #     lm, [lm.getid(lm.lits.check, pos, c) for c in range(n_chars)], 1
-        # )
-        # wcnf.extend(clauses)
-        # wcnf.append([lit])
 
     # define unused literals
     for nid in range(n_nodes):
@@ -225,13 +202,10 @@ def solve(mat: List[List[Tuple[int, int]]], n_arr: int, minimize: bool):
         solver.append_formula(cnf)
         solver.solve()
         sol = solver.get_model()
-        # print(sol)
     assert sol
 
     # extracts baes and check arrays.
     sol = set(sol)
-    # for key in lm.enum_base_keys():
-    #     print(f"key={key}")
     nid2base = dict(
         (nid, base) for (lit, nid, base), val in lm.enum_base_items() if val in sol
     )
@@ -241,27 +215,11 @@ def solve(mat: List[List[Tuple[int, int]]], n_arr: int, minimize: bool):
         for pos in range(n_arr)
         if lm.getid(lm.lits.check, nid, pos) in sol
     )
-    # print(sorted(nid2base.keys()))
-    # assert sorted(bases.keys()) == list(range(n_nodes))
 
     barr: list[Optional[int]] = [None for _ in range(n_arr)]
     carr: list[Optional[int]] = [None for _ in range(n_arr)]
 
     n_arr = 0
-    # # root
-    # barr[0] = bases[0]
-    # for nid in range(len(mat)):
-    #     base = bases[nid]
-    #     for (c, child_id) in mat[nid]:
-    #         pos = base + c
-    #         print(
-    #             f"(nid, c, child_id)={(nid, c, child_id)}, base={base}, barr[{base+c}]={barr[base+c]}, carr[{base+c}]={carr[base+c]}, checks[{pos}]={checks[pos]}"
-    #         )
-    #         assert barr[base + c] == None
-    #         assert carr[base + c] == None
-    #         barr[base + c] = bases[child_id]
-    #         carr[base + c] = c
-    #         n_arr = max(n_arr, base + c)
     # root
     nid2idx = dict()
     nid2idx[0] = 0
@@ -272,12 +230,8 @@ def solve(mat: List[List[Tuple[int, int]]], n_arr: int, minimize: bool):
         par_base = nid2base[nid]
         for (c, child_id) in mat[nid]:
             child_idx = par_base + c
-            # print(
-            #     f"(nid, c, child_id)={(nid, c, child_id)}, base={par_base}, barr[{par_base+c}]={barr[par_base+c]}, carr[{par_base+c}]={carr[par_base+c]}, checks[{child_idx}]={checks[child_idx]}"
-            # )
             assert barr[par_base + c] == None
             assert carr[par_base + c] == None
-            # barr[par_base + c] = nid2base[child_id]
             carr[par_base + c] = par_idx
             nid2idx[child_id] = par_base + c
             n_arr = max(n_arr, par_base + c)
@@ -285,9 +239,6 @@ def solve(mat: List[List[Tuple[int, int]]], n_arr: int, minimize: bool):
     da = {"n_arr": n_arr, "root": nid2base[0], "base": barr, "check": carr}
     da = {"base": barr, "check": carr}
     return da
-    # json.dump(da, open("da_opt.json", "w"))
-    # print(da)
-    # print(checks)
 
 
 def read_matrix(path) -> List[List[Tuple[int, int]]]:
@@ -305,7 +256,6 @@ def parse_args():
     parser.add_argument(
         "--log_level", type=str, help="log level, DEBUG/INFO/CRITICAL", default="INFO"
     )
-    # parser.add_argument("--output", type=str, help="output file", default="")
     args = parser.parse_args()
     if args.mat is None or args.n_arr is None:
         parser.print_help()
@@ -325,4 +275,3 @@ if __name__ == "__main__":
     mat = read_matrix(args.mat)
     da = solve(mat, args.n_arr, args.minimize)
     json.dump(da, open(args.output, "w"))
-    # print(mat)

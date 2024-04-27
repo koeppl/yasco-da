@@ -101,7 +101,6 @@ impl DoubleArray {
 
     /// Set a base value and check for the node `parent`.
     fn set_base_check(&mut self, parent: usize, base: usize, chars: &[u8]) {
-        // println!("base[{}]={}", parent, base);
         self.base[parent] = Some(base);
         for &c in chars {
             self.check[base + c as usize] = Some(parent);
@@ -121,7 +120,6 @@ impl DoubleArray {
         char_idx: usize,
         keys: &[Vec<u8>],
     ) {
-        // dbg!((parent, key_beg, key_end, char_idx));
         assert!(key_beg <= key_end && key_end <= keys.len() && !keys.is_empty());
         if key_beg >= key_end || keys[key_end - 1].len() <= char_idx {
             return;
