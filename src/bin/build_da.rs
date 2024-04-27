@@ -50,5 +50,4 @@ fn main() {
 
     let json = da.to_json();
     fs::write(&args.output_path, json).unwrap();
-
 }

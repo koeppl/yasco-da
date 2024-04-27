@@ -31,5 +31,4 @@ fn main() {
     println!("|keys1|={}, |keys2|={}", keys1.len(), keys2.len());
     assert_eq!(keys1.len(), keys2.len());
     assert_eq!(keys1, keys2);
-
 }
