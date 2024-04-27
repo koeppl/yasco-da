@@ -4,10 +4,10 @@
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from typing import Tuple
-import shutil
 
 from joblib import Parallel, delayed
 
