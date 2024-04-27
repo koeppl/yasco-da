@@ -76,7 +76,6 @@ def pysat_atleast_one(xs: list[int]) -> list[int]:
     return xs
 
 
-
 def pysat_exactlyone(lm: LiteralManager, xs: list[int]) -> Tuple[int, list[list[int]]]:
     """
     There must be one positive literal in the given literals.

@@ -133,9 +133,9 @@ def da_solver(
     # constraints
     logger.info("register constraints")
     # relation between base values and check values
-    for (_, nid, pos) in lm.enum_base_keys():
+    for _, nid, pos in lm.enum_base_keys():
         lit_base = lm.getid(lm.lits.base, nid, pos)
-        for (c, child_id) in mat[nid]:
+        for c, child_id in mat[nid]:
             if mat[nid] == root:
                 continue
             lit_check = lm.getid(lm.lits.check, nid, pos + c)
@@ -228,7 +228,7 @@ def solve(mat: List[List[Tuple[int, int]]], n_arr: int, minimize: bool):
         par_idx = nid2idx[nid]
         barr[par_idx] = nid2base[nid]
         par_base = nid2base[nid]
-        for (c, child_id) in mat[nid]:
+        for c, child_id in mat[nid]:
             child_idx = par_base + c
             assert barr[par_base + c] == None
             assert carr[par_base + c] == None

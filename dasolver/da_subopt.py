@@ -144,4 +144,6 @@ if __name__ == "__main__":
     res = calc_subopt2(
         args.input, args.size_beg, args.size_end, args.timeout, args.n_proc
     )
-    print(f"RESULT method=subopt file={args.input} length={res} searchstartlength={args.size_beg} searchendlength={args.size_end} procs={args.n_proc} timeout={args.timeout}")
+    print(
+        f"RESULT method=subopt file={args.input} length={res} searchstartlength={args.size_beg} searchendlength={args.size_end} procs={args.n_proc} timeout={args.timeout}"
+    )
